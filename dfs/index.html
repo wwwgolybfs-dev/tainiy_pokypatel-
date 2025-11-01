@@ -83,6 +83,9 @@
             background: linear-gradient(135deg, #ff9800, #f57c00);
             margin-left: 10px;
         }
+        .skip-button.skipped {
+            background: linear-gradient(135deg, #f44336, #d32f2f); /* Красный для пропущенных */
+        }
         #rating {
             font-size: 1.5em;
             color: #27ae60;
@@ -153,7 +156,50 @@
             transform: scale(1.05);
         }
         /* Responsive adaptations */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            h2 {
+                font-size: 1.3em;
+            }
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            th, td {
+                padding: 10px;
+                font-size: 0.95em;
+            }
+            .radio-group {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+            button {
+                width: 100%;
+                margin-bottom: 10px;
+                margin-right: 0;
+            }
+            #photo-preview img {
+                max-width: 100%;
+            }
+            .section {
+                padding: 15px;
+            }
+            .skip-button {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+            select, .radio-group {
+                width: 100%;
+            }
+        }
+        @media (max-width: 480px) {
             body {
                 padding: 10px;
             }
@@ -163,27 +209,18 @@
             h2 {
                 font-size: 1.2em;
             }
-            table {
-                display: block;
-                overflow-x: auto;
-            }
             th, td {
                 padding: 8px;
                 font-size: 0.9em;
             }
             .radio-group {
-                flex-direction: column;
                 gap: 5px;
             }
-            button {
-                width: 100%;
-                margin-bottom: 10px;
-            }
-            #photo-preview img {
-                max-width: 100%;
-            }
             .section {
-                padding: 15px;
+                padding: 10px;
+            }
+            textarea {
+                height: 80px;
             }
         }
     </style>
@@ -903,7 +940,11 @@
                     input.value = '';
                 }
             });
-            // Optionally, you can add logic to mark as skipped or ignore in calculation
+            // Изменяем цвет кнопки на красный для визуального отображения пропуска
+            const button = document.querySelector(`button[onclick="skipQuestion('${name}')"]`);
+            if (button) {
+                button.classList.add('skipped');
+            }
             alert(`Вопрос "${name}" пропущен.`);
         }
 
