@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выездная проверка управления офиса: Оценка филиала</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.10/vfs_fonts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1, h2 {
+            color: #1a73e8;
+            margin-bottom: 15px;
+        }
+        h1 {
+            font-size: 2em;
+            text-align: center;
+        }
+        h2 {
+            font-size: 1.5em;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: linear-gradient(135deg, #1a73e8, #4285f4);
+            color: white;
+            font-weight: 500;
+        }
+        td {
+            background-color: #fff;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .instruction {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border-left: 5px solid #1a73e8;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+        button {
+            background: linear-gradient(135deg, #1a73e8, #4285f4);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(26, 115, 232, 0.3);
+        }
+        .skip-button {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            margin-left: 10px;
+        }
+        #rating {
+            font-size: 1.5em;
+            color: #27ae60;
+            margin-top: 20px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #e8f9ee;
+        }
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .radio-group label {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .radio-group label:hover {
+            color: #1a73e8;
+        }
+        select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        select:focus {
+            border-color: #1a73e8;
+        }
+        textarea {
+            width: 100%;
+            height: 60px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+        textarea:focus {
+            border-color: #1a73e8;
+        }
+        .order-composition {
+            margin-bottom: 20px;
+        }
+        .order-composition textarea {
+            height: 120px;
+        }
+        #photo-section {
+            margin-bottom: 20px;
+        }
+        #photo-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        #photo-preview img {
+            max-width: 150px;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        #photo-preview img:hover {
+            transform: scale(1.05);
+        }
+        /* Responsive adaptations */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+            h2 {
+                font-size: 1.2em;
+            }
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            th, td {
+                padding: 8px;
+                font-size: 0.9em;
+            }
+            .radio-group {
+                flex-direction: column;
+                gap: 5px;
+            }
+            button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            #photo-preview img {
+                max-width: 100%;
+            }
+            .section {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Выездная проверка управления офиса в филиале</h1>
+    <div class="instruction">
+        <h2>Цель: Выявление несоответствий стандартам компании</h2>
+        <p>Руководство по процессу выездной проверки управления офиса:</p>
+        <ol>
+            <li>Посетите филиал в роли представителя управления для общей инспекции.</li>
+            <li>Оцените чистоту, оборудование, персонал, взаимодействия и, при необходимости, оформите тестовый заказ (оплата онлайн в приложении или на кассе наличными/картой).</li>
+            <li><strong>Ключевой аспект:</strong> Проверьте чистоту по 5-бальной шкале для ключевых зон (холодильники, воки, фритюр, масло во фритюрнице, товарное соседство, сроки годности, правильность приготовления, посторонние вещи на поверхностях, униформа, головные уборы, бородники).</li>
+            <li>Если присутствует курьер: проверьте наличие сумки, общение кассира с курьерами и гостями.</li>
+            <li>Сфотографируйте состояние филиала, чистоты, оборудования и позиций заказа (если применимо).</li>
+            <li>Напишите краткую рецензию на основе наблюдений.</li>
+        </ol>
+    </div>
+
+    <form id="evaluationForm">
+        <div class="section">
+            <h2>Оценка чистоты и оборудования (по 5-бальной шкале)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Критерий</th>
+                        <th>Описание</th>
+                        <th>Оценка (1-5) или Не видел</th>
+                        <th>Комментарии/Что пошло не так?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Чистота холодильников</td>
+                        <td>Отсутствие грязи, правильное хранение</td>
+                        <td>
+                            <select name="clean1">
+                                <option value="">Выберите</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="not_seen">Не видел</option>
+                            </select>
+                            <button type="button" class="skip-button" onclick="skipQuestion('clean1')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_clean1"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Чистота воков</td>
+                        <td>Отсутствие нагара, чистота поверхностей</td>
+                        <td>
+                            <select name="clean2">
+                                <option value="">Выберите</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="not_seen">Не видел</option>
+                            </select>
+                            <button type="button" class="skip-button" onclick="skipQuestion('clean2')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_clean2"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Чистота фритюр зоны</td>
+                        <td>Чистота оборудования, отсутствие жира</td>
+                        <td>
+                            <select name="clean3">
+                                <option value="">Выберите</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="not_seen">Не видел</option>
+                            </select>
+                            <button type="button" class="skip-button" onclick="skipQuestion('clean3')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_clean3"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Состояние масла во фритюрнице</td>
+                        <td>Чистота масла, уровень, отсутствие примесей</td>
+                        <td>
+                            <select name="clean4">
+                                <option value="">Выберите</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="not_seen">Не видел</option>
+                            </select>
+                            <button type="button" class="skip-button" onclick="skipQuestion('clean4')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_clean4"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Товарное соседство</td>
+                        <td>Правильное размещение продуктов</td>
+                        <td>
+                            <select name="clean5">
+                                <option value="">Выберите</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="not_seen">Не видел</option>
+                            </select>
+                            <button type="button" class="skip-button" onclick="skipQuestion('clean5')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_clean5"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Сроки годности продуктов</td>
+                        <td>Все в сроках, отсутствие просрочки</td>
+                        <td>
+                            <select name="clean6">
+                                <option value="">Выберите</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="not_seen">Не видел</option>
+                            </select>
+                            <button type="button" class="skip-button" onclick="skipQuestion('clean6')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_clean6"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Правильность приготовления</td>
+                        <td>Соответствие технологиям, гигиена</td>
+                        <td>
+                            <select name="clean7">
+                                <option value="">Выберите</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="not_seen">Не видел</option>
+                            </select>
+                            <button type="button" class="skip-button" onclick="skipQuestion('clean7')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_clean7"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Отсутствие посторонних вещей на поверхностях</td>
+                        <td>Рабочие зоны свободны от лишнего</td>
+                        <td>
+                            <select name="clean8">
+                                <option value="">Выберите</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="not_seen">Не видел</option>
+                            </select>
+                            <button type="button" class="skip-button" onclick="skipQuestion('clean8')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_clean8"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Униформа и головные уборы</td>
+                        <td>Чистая форма, головные уборы на месте</td>
+                        <td>
+                            <select name="clean9">
+                                <option value="">Выберите</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="not_seen">Не видел</option>
+                            </select>
+                            <button type="button" class="skip-button" onclick="skipQuestion('clean9')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_clean9"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Наличие бородников (если борода)</td>
+                        <td>Бородники у сотрудников с бородой</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="clean10" value="yes"> Да</label>
+                                <label><input type="radio" name="clean10" value="no"> Нет</label>
+                                <label><input type="radio" name="clean10" value="not_applicable"> Не применимо (нет бороды)</label>
+                                <label><input type="radio" name="clean10" value="not_seen"> Не видел</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('clean10')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_clean10"></textarea></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Оценка персонала и взаимодействий</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Критерий</th>
+                        <th>Описание</th>
+                        <th>Да/Нет или Не видел</th>
+                        <th>Комментарии/Что пошло не так?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Общение кассира с гостями</td>
+                        <td>Вежливое, профессиональное (если наблюдалось)</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="staff1" value="yes"> Да</label>
+                                <label><input type="radio" name="staff1" value="no"> Нет</label>
+                                <label><input type="radio" name="staff1" value="not_seen"> Не видел</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('staff1')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_staff1"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Общение кассира с курьерами</td>
+                        <td>Вежливое, эффективное (если наблюдалось)</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="staff2" value="yes"> Да</label>
+                                <label><input type="radio" name="staff2" value="no"> Нет</label>
+                                <label><input type="radio" name="staff2" value="not_seen"> Не видел</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('staff2')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_staff2"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Курьер с сумкой (если присутствовал)</td>
+                        <td>Курьер имел термосумку</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="staff3" value="yes"> Да</label>
+                                <label><input type="radio" name="staff3" value="no"> Нет</label>
+                                <label><input type="radio" name="staff3" value="not_present"> Не присутствовал</label>
+                                <label><input type="radio" name="staff3" value="not_seen"> Не видел</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('staff3')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_staff3"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Общая опрятность персонала</td>
+                        <td>Внешний вид соответствует стандартам</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="staff4" value="yes"> Да</label>
+                                <label><input type="radio" name="staff4" value="no"> Нет</label>
+                                <label><input type="radio" name="staff4" value="not_seen"> Не видел</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('staff4')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_staff4"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Эффективность работы персонала</td>
+                        <td>Быстрое и организованное обслуживание</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="staff5" value="yes"> Да</label>
+                                <label><input type="radio" name="staff5" value="no"> Нет</label>
+                                <label><input type="radio" name="staff5" value="not_seen"> Не видел</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('staff5')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_staff5"></textarea></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Оценка заказа и кассира (если проводился тестовый заказ)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Критерий</th>
+                        <th>Описание</th>
+                        <th>Да/Нет или Не проводился</th>
+                        <th>Комментарии/Что пошло не так?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Вежливость кассира</td>
+                        <td>Приветствие, общение</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="order1" value="yes"> Да</label>
+                                <label><input type="radio" name="order1" value="no"> Нет</label>
+                                <label><input type="radio" name="order1" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('order1')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_order1"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Скорость обслуживания</td>
+                        <td>Быстрое оформление заказа</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="order2" value="yes"> Да</label>
+                                <label><input type="radio" name="order2" value="no"> Нет</label>
+                                <label><input type="radio" name="order2" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('order2')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_order2"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Действия при позиции в стоп-листе</td>
+                        <td>Предложил замену, объяснил</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="order3" value="yes"> Да</label>
+                                <label><input type="radio" name="order3" value="no"> Нет</label>
+                                <label><input type="radio" name="order3" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('order3')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_order3"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Сборка заказа</td>
+                        <td>Качество сборки</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="order4" value="yes"> Да</label>
+                                <label><input type="radio" name="order4" value="no"> Нет</label>
+                                <label><input type="radio" name="order4" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('order4')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_order4"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Правильная укладка упаковки</td>
+                        <td>Коробки, супницы и т.д.</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="order5" value="yes"> Да</label>
+                                <label><input type="radio" name="order5" value="no"> Нет</label>
+                                <label><input type="radio" name="order5" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('order5')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_order5"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Правильное соседство продуктов</td>
+                        <td>Холодное отдельно от горячего</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="order6" value="yes"> Да</label>
+                                <label><input type="radio" name="order6" value="no"> Нет</label>
+                                <label><input type="radio" name="order6" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('order6')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_order6"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Отсутствие брака</td>
+                        <td>Порванные пакеты и т.д.</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="order7" value="yes"> Да</label>
+                                <label><input type="radio" name="order7" value="no"> Нет</label>
+                                <label><input type="radio" name="order7" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('order7')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_order7"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Состав заказа соответствует</td>
+                        <td>Всё положено</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="order8" value="yes"> Да</label>
+                                <label><input type="radio" name="order8" value="no"> Нет</label>
+                                <label><input type="radio" name="order8" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('order8')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_order8"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Коробки подписаны</td>
+                        <td>Маркировка коробок</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="order9" value="yes"> Да</label>
+                                <label><input type="radio" name="order9" value="no"> Нет</label>
+                                <label><input type="radio" name="order9" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('order9')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_order9"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Наличие чека</td>
+                        <td>Чек выдан</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="order10" value="yes"> Да</label>
+                                <label><input type="radio" name="order10" value="no"> Нет</label>
+                                <label><input type="radio" name="order10" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('order10')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_order10"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Сервировка</td>
+                        <td>Качество сервировки</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="order11" value="yes"> Да</label>
+                                <label><input type="radio" name="order11" value="no"> Нет</label>
+                                <label><input type="radio" name="order11" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('order11')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_order11"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Все наклейки на месте</td>
+                        <td>Наклейки приклеены</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="order12" value="yes"> Да</label>
+                                <label><input type="radio" name="order12" value="no"> Нет</label>
+                                <label><input type="radio" name="order12" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('order12')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_order12"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Все приборы присутствуют</td>
+                        <td>Приборы в комплекте</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="order13" value="yes"> Да</label>
+                                <label><input type="radio" name="order13" value="no"> Нет</label>
+                                <label><input type="radio" name="order13" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('order13')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_order13"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Наличие подстаканника</td>
+                        <td>Подстаканник в заказе</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="order14" value="yes"> Да</label>
+                                <label><input type="radio" name="order14" value="no"> Нет</label>
+                                <label><input type="radio" name="order14" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('order14')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_order14"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Супницы в фасовке</td>
+                        <td>Упаковка супниц</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="order15" value="yes"> Да</label>
+                                <label><input type="radio" name="order15" value="no"> Нет</label>
+                                <label><input type="radio" name="order15" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('order15')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_order15"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Приборы соответствуют количеству персон</td>
+                        <td>Количество приборов</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="order16" value="yes"> Да</label>
+                                <label><input type="radio" name="order16" value="no"> Нет</label>
+                                <label><input type="radio" name="order16" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('order16')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_order16"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Учет комментария к заказу</td>
+                        <td>Если комментарий был</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="order17" value="yes"> Да</label>
+                                <label><input type="radio" name="order17" value="no"> Нет</label>
+                                <label><input type="radio" name="order17" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('order17')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_order17"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Правильное применение бонусов</td>
+                        <td>Бонусы применены корректно (если использовались)</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="order18" value="yes"> Да</label>
+                                <label><input type="radio" name="order18" value="no"> Нет</label>
+                                <label><input type="radio" name="order18" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('order18')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_order18"></textarea></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Оценка блюд (если проводился тестовый заказ)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Критерий</th>
+                        <th>Описание</th>
+                        <th>Оценка или Не проводился</th>
+                        <th>Комментарии/Что пошло не так?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Температура блюд</td>
+                        <td>Оценка температуры</td>
+                        <td>
+                            <select name="dish1">
+                                <option value="">Выберите</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="not_conducted">Не проводился</option>
+                            </select>
+                            <button type="button" class="skip-button" onclick="skipQuestion('dish1')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_dish1"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Отсутствие посторонних предметов</td>
+                        <td>Нет лишнего в блюдах</td>
+                        <td>
+                            <div class="radio-group">
+                                <label><input type="radio" name="dish2" value="yes"> Да</label>
+                                <label><input type="radio" name="dish2" value="no"> Нет</label>
+                                <label><input type="radio" name="dish2" value="not_conducted"> Не проводился</label>
+                            </div>
+                            <button type="button" class="skip-button" onclick="skipQuestion('dish2')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_dish2"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Правильный состав ингредиентов</td>
+                        <td>Соответствие рецепту</td>
+                        <td>
+                            <select name="dish3">
+                                <option value="">Выберите</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="not_conducted">Не проводился</option>
+                            </select>
+                            <button type="button" class="skip-button" onclick="skipQuestion('dish3')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_dish3"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Вес блюд</td>
+                        <td>Соответствие весу</td>
+                        <td>
+                            <select name="dish4">
+                                <option value="">Выберите</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="not_conducted">Не проводился</option>
+                            </select>
+                            <button type="button" class="skip-button" onclick="skipQuestion('dish4')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_dish4"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Вкус блюд</td>
+                        <td>Оценка вкуса</td>
+                        <td>
+                            <select name="dish5">
+                                <option value="">Выберите</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="not_conducted">Не проводился</option>
+                            </select>
+                            <button type="button" class="skip-button" onclick="skipQuestion('dish5')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_dish5"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Свежесть продуктов</td>
+                        <td>Продукты свежие</td>
+                        <td>
+                            <select name="dish6">
+                                <option value="">Выберите</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="not_conducted">Не проводился</option>
+                            </select>
+                            <button type="button" class="skip-button" onclick="skipQuestion('dish6')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_dish6"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Учет комментария к заказу (для блюд)</td>
+                        <td>Если комментарий был</td>
+                        <td>
+                            <select name="dish7">
+                                <option value="">Выберите</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="not_conducted">Не проводился</option>
+                            </select>
+                            <button type="button" class="skip-button" onclick="skipQuestion('dish7')">Пропустить</button>
+                        </td>
+                        <td><textarea name="comment_dish7"></textarea></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section order-composition">
+            <h2>Состав заказа (если проводился)</h2>
+            <textarea name="order_composition" placeholder="Укажите детали состава заказа (позиции, количества, комментарии и т.д.)">
+            </textarea>
+        </div>
+
+        <div class="section order-composition">
+            <h2>Краткая рецензия</h2>
+            <textarea name="review" placeholder="Напишите краткую рецензию на основе наблюдений (общее впечатление, рекомендации и т.д.)">
+            </textarea>
+        </div>
+
+        <div class="section" id="photo-section">
+            <h2>Загрузка фото (чистоты филиала, оборудования, позиций заказа)</h2>
+            <input type="file" id="photo-input" multiple accept="image/*">
+            <div id="photo-preview"></div>
+        </div>
+
+        <button type="button" onclick="calculateRating()">Рассчитать рейтинг филиала</button>
+        <button type="button" onclick="exportToPDF()">Экспорт в PDF</button>
+    </form>
+
+    <div id="rating"></div>
+
+    <script>
+        let photos = []; // Массив для dataURL фото
+
+        document.getElementById('photo-input').addEventListener('change', function(event) {
+            const files = event.target.files;
+            const preview = document.getElementById('photo-preview');
+            preview.innerHTML = '';
+            photos = [];
+            for (let file of files) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                    photos.push(e.target.result); // Сохраняем dataURL
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function skipQuestion(name) {
+            const inputs = document.querySelectorAll(`[name="${name}"]`);
+            inputs.forEach(input => {
+                if (input.type === 'radio' || input.type === 'checkbox') {
+                    input.checked = false;
+                } else if (input.tagName === 'SELECT') {
+                    input.value = '';
+                }
+            });
+            // Optionally, you can add logic to mark as skipped or ignore in calculation
+            alert(`Вопрос "${name}" пропущен.`);
+        }
+
+        function calculateRating() {
+            const form = document.getElementById('evaluationForm');
+            const radios = form.querySelectorAll('input[type="radio"]:checked');
+            const selects = form.querySelectorAll('select');
+
+            let cleanScore = 0;
+            let cleanMax = 0;
+            let staffScore = 0;
+            let staffMax = 0;
+            let totalScore = 0;
+            let totalMax = 0;
+
+            const cleanWeights = {
+                'clean1': 2, // Холодильники, высокий вес
+                'clean2': 1,
+                'clean3': 1,
+                'clean4': 2, // Масло во фритюрнице
+                'clean5': 2, // Товарное соседство
+                'clean6': 2, // Сроки годности
+                'clean7': 2, // Правильность приготовления
+                'clean8': 1,
+                'clean9': 1,
+                'clean10': 1
+            };
+
+            const staffWeights = {
+                'staff1': 1,
+                'staff2': 1,
+                'staff3': 1,
+                'staff4': 0.5,
+                'staff5': 0.5
+            };
+
+            const orderWeights = {
+                'order1': 1,
+                'order2': 1,
+                'order3': 1,
+                'order4': 1,
+                'order5': 1,
+                'order6': 1,
+                'order7': 1,
+                'order8': 2,
+                'order9': 1,
+                'order10': 1,
+                'order11': 1,
+                'order12': 1,
+                'order13': 1,
+                'order14': 1,
+                'order15': 1,
+                'order16': 1,
+                'order17': 1,
+                'order18': 1
+            };
+
+            const dishWeights = {
+                'dish1': 1,
+                'dish2': 1,
+                'dish3': 1,
+                'dish4': 1,
+                'dish5': 2,
+                'dish6': 2,
+                'dish7': 1
+            };
+
+            // Обработка радио-кнопок (yes/no)
+            radios.forEach(radio => {
+                const name = radio.name;
+                let weight = 0;
+
+                if (name.startsWith('staff')) {
+                    weight = staffWeights[name] || 1;
+                    staffMax += weight;
+                } else if (name.startsWith('order')) {
+                    weight = orderWeights[name] || 1;
+                } else if (name.startsWith('dish')) {
+                    weight = dishWeights[name] || 1;
+                } else if (name.startsWith('clean')) {
+                    weight = cleanWeights[name] || 1;
+                    cleanMax += weight;
+                }
+
+                totalMax += weight;
+
+                if (radio.value === 'yes') {
+                    if (name.startsWith('staff')) {
+                        staffScore += weight;
+                    } else if (name.startsWith('clean')) {
+                        cleanScore += weight;
+                    }
+                    totalScore += weight;
+                } else if (radio.value === 'no' || radio.value === 'not_seen' || radio.value === 'not_conducted' || radio.value === 'not_present' || radio.value === 'not_applicable') {
+                    // Для "нет" или пропущенных - 0 баллов, но максимум считается
+                }
+            });
+
+            // Обработка селектов (1-5)
+            selects.forEach(select => {
+                if (select.value !== '' && select.value !== 'not_seen' && select.value !== 'not_conducted') {
+                    const name = select.name;
+                    let weight = 0;
+                    const value = parseInt(select.value);
+
+                    if (name.startsWith('clean')) {
+                        weight = cleanWeights[name] || 1;
+                        cleanMax += weight;
+                        cleanScore += (value / 5) * weight;
+                    } else if (name.startsWith('dish') && name !== 'dish2') {
+                        weight = dishWeights[name] || 1;
+                    }
+
+                    totalMax += weight;
+                    totalScore += (value / 5) * weight;
+                } else if (select.value === 'not_seen' || select.value === 'not_conducted') {
+                    // Пропуск, не добавляем в максимум
+                }
+            });
+
+            if (totalMax === 0) {
+                document.getElementById('rating').innerHTML = 'Рейтинг: Не все критерии оценены!';
+                return;
+            }
+
+            const cleanRating = cleanMax > 0 ? Math.round((cleanScore / cleanMax) * 100) : 0;
+            const staffRating = staffMax > 0 ? Math.round((staffScore / staffMax) * 100) : 0;
+            const overallRating = Math.round((totalScore / totalMax) * 100);
+            const finalClean = Math.max(1, Math.min(100, cleanRating));
+            const finalStaff = Math.max(1, Math.min(100, staffRating));
+            const finalOverall = Math.max(1, Math.min(100, overallRating));
+
+            document.getElementById('rating').innerHTML = `Рейтинг чистоты и оборудования: ${finalClean} из 100<br>Рейтинг персонала и взаимодействий: ${finalStaff} из 100<br>Общий рейтинг филиала: ${finalOverall} из 100`;
+        }
+
+        function exportToPDF() {
+            // Собираем содержимое для pdfmake
+            const dd = {
+                content: [],
+                styles: {
+                    header: { fontSize: 18, bold: true, margin: [0, 0, 0, 10] },
+                    subheader: { fontSize: 14, bold: true, margin: [0, 10, 0, 5] },
+                    table: { margin: [0, 5, 0, 15] }
+                },
+                defaultStyle: {
+                    font: 'Roboto' // Для кириллицы
+                }
+            };
+
+            // Заголовок
+            dd.content.push({ text: 'Отчет по выездной проверке управления офиса', style: 'header' });
+
+            // Состав заказа
+            const orderComp = document.querySelector('[name="order_composition"]').value || 'Не проводился';
+            dd.content.push({ text: 'Состав заказа (если проводился):', style: 'subheader' });
+            dd.content.push({ text: orderComp });
+
+            // Краткая рецензия
+            const review = document.querySelector('[name="review"]').value || 'Не указана';
+            dd.content.push({ text: 'Краткая рецензия:', style: 'subheader' });
+            dd.content.push({ text: review });
+
+            // Оценка чистоты и оборудования
+            dd.content.push({ text: 'Оценка чистоты и оборудования:', style: 'subheader' });
+            const cleanTable = { table: { widths: ['*', '*', '*', '*'], body: [['Критерий', 'Описание', 'Оценка (1-5)', 'Комментарии']] } };
+            const cleanRows = document.querySelectorAll('.section:nth-child(1) tbody tr');
+            cleanRows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const crit = cells[0].textContent;
+                const desc = cells[1].textContent;
+                let val = row.querySelector('select') ? row.querySelector('select').value || 'Не оценено' : 
+                          row.querySelector('input:checked') ? row.querySelector('input:checked').value : 'Не оценено';
+                if (val === 'yes') val = 'Да';
+                if (val === 'no') val = 'Нет';
+                if (val === 'not_seen') val = 'Не видел';
+                if (val === 'not_applicable') val = 'Не применимо';
+                const comm = cells[3].querySelector('textarea').value || 'Нет';
+                cleanTable.table.body.push([crit, desc, val, comm]);
+            });
+            dd.content.push(cleanTable);
+
+            // Оценка персонала и взаимодействий
+            dd.content.push({ text: 'Оценка персонала и взаимодействий:', style: 'subheader' });
+            const staffTable = { table: { widths: ['*', '*', '*', '*'], body: [['Критерий', 'Описание', 'Да/Нет', 'Комментарии']] } };
+            const staffRows = document.querySelectorAll('.section:nth-child(2) tbody tr');
+            staffRows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const crit = cells[0].textContent;
+                const desc = cells[1].textContent;
+                let val = row.querySelector('input:checked') ? row.querySelector('input:checked').value : 'Не оценено';
+                val = val === 'yes' ? 'Да' : (val === 'no' ? 'Нет' : (val === 'not_seen' ? 'Не видел' : (val === 'not_present' ? 'Не присутствовал' : val)));
+                const comm = cells[3].querySelector('textarea').value || 'Нет';
+                staffTable.table.body.push([crit, desc, val, comm]);
+            });
+            dd.content.push(staffTable);
+
+            // Оценка заказа и кассира
+            dd.content.push({ text: 'Оценка заказа и кассира (если проводился):', style: 'subheader' });
+            const orderTable = { table: { widths: ['*', '*', '*', '*'], body: [['Критерий', 'Описание', 'Да/Нет', 'Комментарии']] } };
+            const orderRows = document.querySelectorAll('.section:nth-child(3) tbody tr');
+            orderRows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const crit = cells[0].textContent;
+                const desc = cells[1].textContent;
+                let val = row.querySelector('input:checked') ? row.querySelector('input:checked').value : 'Не оценено';
+                val = val === 'yes' ? 'Да' : (val === 'no' ? 'Нет' : (val === 'not_conducted' ? 'Не проводился' : val));
+                const comm = cells[3].querySelector('textarea').value || 'Нет';
+                orderTable.table.body.push([crit, desc, val, comm]);
+            });
+            dd.content.push(orderTable);
+
+            // Оценка блюд
+            dd.content.push({ text: 'Оценка блюд (если проводился):', style: 'subheader' });
+            const dishTable = { table: { widths: ['*', '*', '*', '*'], body: [['Критерий', 'Описание', 'Оценка', 'Комментарии']] } };
+            const dishRows = document.querySelectorAll('.section:nth-child(4) tbody tr');
+            dishRows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const crit = cells[0].textContent;
+                const desc = cells[1].textContent;
+                let val = 'Не оценено';
+                if (row.querySelector('select')) {
+                    val = row.querySelector('select').value || 'Не оценено';
+                    if (val === 'not_conducted') val = 'Не проводился';
+                } else if (row.querySelector('input:checked')) {
+                    val = row.querySelector('input:checked').value;
+                    val = val === 'yes' ? 'Да' : (val === 'no' ? 'Нет' : (val === 'not_conducted' ? 'Не проводился' : val));
+                }
+                const comm = cells[3].querySelector('textarea').value || 'Нет';
+                dishTable.table.body.push([crit, desc, val, comm]);
+            });
+            dd.content.push(dishTable);
+
+            // Фото
+            if (photos.length > 0) {
+                dd.content.push({ text: 'Загруженные фото (чистоты филиала, оборудования, позиций заказа):', style: 'subheader' });
+                photos.forEach((photo, index) => {
+                    dd.content.push({ image: photo, width: 150, margin: [0, 5, 0, 5] });
+                    dd.content.push({ text: `Фото ${index + 1}` });
+                });
+            }
+
+            // Рейтинги
+            const ratingText = document.getElementById('rating').innerText || 'Рейтинги не рассчитаны';
+            dd.content.push({ text: ratingText, style: 'subheader' });
+
+            // Генерация и скачивание PDF
+            pdfMake.createPdf(dd).download('vyzdnaya_proverka_upravleniya.pdf');
+        }
+    </script>
+</body>
+</html>
